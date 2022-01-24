@@ -12,6 +12,10 @@ class LibraryListPage extends StatefulWidget {
 class _LibraryListPageState extends State<LibraryListPage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserModel>(builder: (context, user, child) {});
+    return Consumer<UserModel>(builder: (context, user, child) {
+      Widget widget;
+      if (user.isLogin) {}
+      return null;
+    });
   }
 }
