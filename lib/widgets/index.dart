@@ -36,22 +36,17 @@ class _MainPageWidgetState extends State<MainPageWidget> {
             ));
       },
     ),
-    const Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: Settings',
-      style: optionStyle,
-    ),
+    Consumer<UserModel>(builder: (context, user, child) {
+      if (user.isLogin) {
+        return const Center(
+          child: Text('logined'),
+        );
+      } else {
+        return const GoLogin();
+      }
+    }),
+    // LoginRoute()
+    const Text('23423')
   ];
 
   // _changeLogin(UserModel? user) {
@@ -63,9 +58,9 @@ class _MainPageWidgetState extends State<MainPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text("Temp Title"),
-      // ),
+      appBar: AppBar(
+        title: const Text("Temp Title"),
+      ),
       body: Center(child: pages.elementAt(currentIndex)),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -107,3 +102,23 @@ Widget showLoding(BuildContext context) {
 //     throw UnimplementedError();
 //   }
 // }
+
+class GoLogin extends StatelessWidget {
+  const GoLogin({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text('请先登陆'),
+        ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context, MaterialPageRoute(builder: (context) {
+                return LoginRoute();
+              }));
+            },
+            child: const Text('去登陆'))
+      ],
+    );
+  }
+}
