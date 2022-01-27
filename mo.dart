@@ -18,7 +18,7 @@ void walk() {
   //遍历JSON目录生成模板
   var src = Directory(SRC);
   var list = src.listSync();
-  var template = File("./template.dart").readAsStringSync();
+  var template = File("./model.template").readAsStringSync();
   File file;
   list.forEach((f) {
     if (FileSystemEntity.isFileSync(f.path)) {
@@ -78,7 +78,6 @@ String getType(v, Set<String> set, String current) {
   } else if (v is List) {
     return "List";
   } else if (v is String) {
-    print(v);
     //处理特殊标志
     if (v.startsWith("$TAG[]")) {
       var className = changeFirstChar(v.substring(3), false);
