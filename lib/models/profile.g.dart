@@ -10,7 +10,9 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile()
   ..user = json['user'] == null
       ? null
       : User.fromJson(json['user'] as Map<String, dynamic>)
-  ..cacheConfig = json['cacheConfig'];
+  ..cacheConfig = json['cacheConfig'] == null
+      ? null
+      : CacheConfig.fromJson(json['cacheConfig'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
       'user': instance.user,

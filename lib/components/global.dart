@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:myfile_app/models/folder.dart';
 import 'package:myfile_app/models/profile.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:path_provider/path_provider.dart';
@@ -11,7 +13,18 @@ class Global {
   // static SharedPreferences _prefs;
   static Profile profile = Profile();
 
+  static List<Folder> folders = [];
+
   static NetCache netCache = NetCache();
+
+  static loadFolders() async {
+    File f = await _getFolderFile();
+    if (await f.exists()) {
+      folders = (json.decode(await f.readAsString()) as List)
+          .map((item) => Folder.fromJson(item))
+          .toList();
+    }
+  }
 
   static bool get isRelease => const bool.fromEnvironment("dart.vm.product");
 
@@ -20,11 +33,19 @@ class Global {
       (await (await _getProfileFile()).writeAsString(profile.toString()));
   // await _getProfileFile();
 
+  static saveFoldersFile() async =>
+      await (await _getFolderFile()).writeAsString(json.encode(folders));
+
   // _prefs.setString("profile", jsonEncode(profile.toJson()));
   static Future<File> _getProfileFile() async {
     // 获取应用目录
     String dir = (await getApplicationDocumentsDirectory()).path;
     return File('$dir/profile.json');
+  }
+
+  static Future<File> _getFolderFile() async {
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    return File('$dir/folders.json');
   }
 
   static bool get isLogined => profile.user == null;

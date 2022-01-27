@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/models/user.dart';
+import 'package:myfile_app/routes/main.dart';
+import 'package:myfile_app/widgets/local.dart';
 import 'package:myfile_app/widgets/login.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +38,7 @@ class _MainPageWidgetState extends State<MainPageWidget> {
             ));
       },
     ),
+    const LocalFolder(),
     Consumer<UserModel>(builder: (context, user, child) {
       if (user.isLogin) {
         return const Center(
@@ -88,13 +91,13 @@ class _MainPageWidgetState extends State<MainPageWidget> {
   }
 }
 
-Widget showLoding(BuildContext context) {
-  // context
-  return CircularProgressIndicator(
-    backgroundColor: Colors.grey[200],
-    valueColor: AlwaysStoppedAnimation(Colors.blue),
-  );
-}
+// Widget showLoding(BuildContext context) {
+//   // context
+//   return CircularProgressIndicator(
+//     backgroundColor: Colors.grey[200],
+//     valueColor: AlwaysStoppedAnimation(Colors.blue),
+//   );
+// }
 // class BottomBar extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
@@ -109,15 +112,23 @@ class GoLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text('请先登陆'),
         ElevatedButton(
             onPressed: () {
-              Navigator.pop(context, MaterialPageRoute(builder: (context) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return LoginRoute();
               }));
             },
-            child: const Text('去登陆'))
+            child: const Text('去登陆')),
+        ElevatedButton(
+            onPressed: () async {
+              showLoading(context);
+              await Future.delayed(const Duration(seconds: 5));
+              Navigator.of(context).pop();
+            },
+            child: const Text("loding..."))
       ],
     );
   }

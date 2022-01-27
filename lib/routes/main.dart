@@ -66,13 +66,60 @@ class _MainPageWidgetState extends State<MainPageWidget> {
   }
 }
 
-Widget showLoding(BuildContext context) {
-  // context
-  return CircularProgressIndicator(
-    backgroundColor: Colors.grey[200],
-    valueColor: AlwaysStoppedAnimation(Colors.blue),
-  );
+void showLoading(context, [String? text]) {
+  // text = text ?? "Loading...";
+  showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Center(
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(3.0),
+                boxShadow: const [
+                  //阴影
+                  BoxShadow(
+                    color: Colors.black12,
+                    //offset: Offset(2.0,2.0),
+                    blurRadius: 10.0,
+                  )
+                ]),
+            padding: EdgeInsets.all(16),
+            margin: EdgeInsets.all(16),
+            constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Text(
+                    text ?? 'Loading...',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      });
 }
+
+// Widget showLoding(BuildContext context) {
+//   // context
+//   return CircularProgressIndicator(
+//     backgroundColor: Colors.grey[200],
+//     valueColor: AlwaysStoppedAnimation(Colors.blue),
+//   );
+// }
 // class BottomBar extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
