@@ -18,7 +18,7 @@ class Global {
   static NetCache netCache = NetCache();
 
   static loadFolders() async {
-    File f = await _getFolderFile();
+    File f = await _getFoldersFile();
     if (await f.exists()) {
       folders = (json.decode(await f.readAsString()) as List)
           .map((item) => Folder.fromJson(item))
@@ -31,10 +31,12 @@ class Global {
   // 持久化Profile信息
   static saveProfile() async =>
       (await (await _getProfileFile()).writeAsString(profile.toString()));
-  // await _getProfileFile();
+
+  // static saveFolders() async =>
+  // (await _getFoldersFile()).writeAsString(folders.toString());
 
   static saveFoldersFile() async =>
-      await (await _getFolderFile()).writeAsString(json.encode(folders));
+      await (await _getFoldersFile()).writeAsString(json.encode(folders));
 
   // _prefs.setString("profile", jsonEncode(profile.toJson()));
   static Future<File> _getProfileFile() async {
@@ -43,7 +45,7 @@ class Global {
     return File('$dir/profile.json');
   }
 
-  static Future<File> _getFolderFile() async {
+  static Future<File> _getFoldersFile() async {
     String dir = (await getApplicationDocumentsDirectory()).path;
     return File('$dir/folders.json');
   }

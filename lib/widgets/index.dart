@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/models/user.dart';
-import 'package:myfile_app/routes/main.dart';
 import 'package:myfile_app/widgets/local.dart';
 import 'package:myfile_app/widgets/login.dart';
 import 'package:provider/provider.dart';
@@ -39,17 +38,22 @@ class _MainPageWidgetState extends State<MainPageWidget> {
       },
     ),
     const LocalFolder(),
-    Consumer<UserModel>(builder: (context, user, child) {
-      if (user.isLogin) {
-        return const Center(
-          child: Text('logined'),
-        );
-      } else {
-        return const GoLogin();
-      }
-    }),
-    // LoginRoute()
-    const Text('23423')
+    const Text(
+      'Index 0: Home',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 1: Business',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 2: School',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 3: Settings',
+      style: optionStyle,
+    ),
   ];
 
   // _changeLogin(UserModel? user) {
@@ -61,9 +65,9 @@ class _MainPageWidgetState extends State<MainPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Temp Title"),
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Temp Title"),
+      // ),
       body: Center(child: pages.elementAt(currentIndex)),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -91,45 +95,27 @@ class _MainPageWidgetState extends State<MainPageWidget> {
   }
 }
 
-// Widget showLoding(BuildContext context) {
-//   // context
-//   return CircularProgressIndicator(
-//     backgroundColor: Colors.grey[200],
-//     valueColor: AlwaysStoppedAnimation(Colors.blue),
-//   );
-// }
-// class BottomBar extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     throw UnimplementedError();
-//   }
-// }
+Widget showLoding(BuildContext context) {
+  // context
+  return CircularProgressIndicator(
+    backgroundColor: Colors.grey[200],
+    valueColor: AlwaysStoppedAnimation(Colors.blue),
+  );
+}
 
 class GoLogin extends StatelessWidget {
-  const GoLogin({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('请先登陆'),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return LoginRoute();
-              }));
-            },
-            child: const Text('去登陆')),
-        ElevatedButton(
-            onPressed: () async {
-              showLoading(context);
-              await Future.delayed(const Duration(seconds: 5));
-              Navigator.of(context).pop();
-            },
-            child: const Text("loding..."))
-      ],
-    );
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      const Text('请先登陆'),
+      ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return LoginRoute();
+            }));
+          },
+          child: const Text('去登陆'))
+    ]);
   }
 }

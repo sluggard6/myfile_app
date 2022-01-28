@@ -8,6 +8,7 @@ class Profile {
   Profile();
 
   User? user;
+  List? folders;
   CacheConfig? cacheConfig;
   
   factory Profile.fromJson(Map<String,dynamic> json) => _$ProfileFromJson(json);
