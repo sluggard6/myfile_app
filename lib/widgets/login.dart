@@ -5,6 +5,8 @@ import 'package:myfile_app/models/user.dart';
 import 'package:provider/provider.dart';
 
 class LoginRoute extends StatefulWidget {
+  const LoginRoute({Key? key}) : super(key: key);
+
   @override
   _LoginRouteState createState() => _LoginRouteState();
 }

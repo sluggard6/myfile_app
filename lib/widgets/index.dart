@@ -117,7 +117,8 @@ class GoLogin extends StatelessWidget {
         const Text('请先登陆'),
         ElevatedButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
+              Navigator.push(context,
+                  MaterialPageRoute<void>(builder: (context) {
                 return LoginRoute();
               }));
             },
