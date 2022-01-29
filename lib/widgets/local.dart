@@ -7,6 +7,7 @@ import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/components/file_extentions.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfile_app/models/folder.dart';
+import 'package:myfile_app/widgets/image_view.dart';
 
 class LocalFolder extends StatefulWidget {
   const LocalFolder({Key? key}) : super(key: key);
@@ -56,7 +57,15 @@ class LocalFolderState extends State<LocalFolder> {
       title: Text(_folders[i].name ?? '未命名'),
       onTap: () {
         String? name = _folders[i].name;
-        Fluttertoast.showToast(msg: 'shwo $name ...');
+        String? path = _folders[i].path;
+        if (path != null) {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (BuildContext context) {
+            return ImageViewer(path: path);
+          }));
+        } else {
+          Fluttertoast.showToast(msg: '找不到 $name ...');
+        }
       },
       onLongPress: () {
         final RenderSliverList button =
