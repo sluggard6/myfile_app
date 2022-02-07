@@ -5,9 +5,7 @@ import 'package:provider/provider.dart';
 
 class LibraryListPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    throw UnimplementedError();
-  }
+  _LibraryListPageState createState() => _LibraryListPageState();
 }
 
 class _LibraryListPageState extends State<LibraryListPage> {

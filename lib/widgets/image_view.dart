@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:myfile_app/components/file_extentions.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ImageViewer extends StatefulWidget {
   const ImageViewer({Key? key, required this.path}) : super(key: key);
@@ -55,6 +56,20 @@ class ImageViewerState extends State<ImageViewer> {
 
   Widget _itemBuilder(BuildContext context, int index) {
     // return Image(image: AssetImage(widget.getImage(index)));
-    return Image.file(File(getImage(index)));
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (
+          BuildContext context,
+        ) {
+          // return Center(child: Image.file(File(getImage(index))));
+          return Container(
+            child: PhotoView(
+              imageProvider: FileImage(File(getImage(index))),
+            ),
+          );
+        }));
+      },
+      child: Image.file(File(getImage(index))),
+    );
   }
 }

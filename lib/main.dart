@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myfile_app/components/http.dart';
 import 'package:myfile_app/widgets/guide.dart';
 
 import 'components/global.dart';
@@ -19,6 +20,7 @@ class MyFile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Global.loadFolders();
+    MyFileHttp.init();
     return const Scaffold(
       body: Guide(),
     );

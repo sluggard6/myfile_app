@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:myfile_app/routes/main.dart';
+import 'package:myfile_app/widgets/library.dart';
 import 'package:myfile_app/widgets/local.dart';
 import 'package:myfile_app/widgets/login.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,14 @@ class _MainPageWidgetState extends State<MainPageWidget> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> pages = <Widget>[
+    Consumer<UserModel>(builder: (context, user, child) {
+      if (user.isLogin) {
+        return LibraryListPage();
+      } else {
+        return GoLogin();
+      }
+    }),
+    const LocalFolder(),
     Consumer<UserModel>(
       builder: (context, user, child) {
         String? text = user.isLogin ? user.user?.username : 'default';
@@ -33,12 +42,11 @@ class _MainPageWidgetState extends State<MainPageWidget> {
                     {user.user = null}
                 },
             child: Text(
-              '${user.isLogin}',
+              '${user.isLogin}$text',
               style: optionStyle,
             ));
       },
     ),
-    const LocalFolder(),
     const Text(
       'Index 0: Home',
       style: optionStyle,
@@ -100,11 +108,13 @@ Widget showLoding(BuildContext context) {
   // context
   return CircularProgressIndicator(
     backgroundColor: Colors.grey[200],
-    valueColor: AlwaysStoppedAnimation(Colors.blue),
+    valueColor: const AlwaysStoppedAnimation(Colors.blue),
   );
 }
 
 class GoLogin extends StatelessWidget {
+  const GoLogin({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -115,7 +125,7 @@ class GoLogin extends StatelessWidget {
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute<void>(builder: (context) {
-                return LoginRoute();
+                return const LoginRoute();
               }));
             },
             child: const Text('去登陆')),

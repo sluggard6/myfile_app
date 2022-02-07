@@ -16,6 +16,5 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile()
 
 Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
       'user': instance.user,
-      'folders': instance.folders,
       'cacheConfig': instance.cacheConfig,
     };

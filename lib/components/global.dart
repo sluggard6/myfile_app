@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:myfile_app/models/folder.dart';
+import 'package:myfile_app/models/local_file.dart';
 import 'package:myfile_app/models/profile.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,15 +13,15 @@ class Global {
   // static SharedPreferences _prefs;
   static Profile profile = Profile();
 
-  static List<Folder> folders = [];
+  static List<LocalFile> files = [];
 
   static NetCache netCache = NetCache();
 
   static loadFolders() async {
     File f = await _getFoldersFile();
     if (await f.exists()) {
-      folders = (json.decode(await f.readAsString()) as List)
-          .map((item) => Folder.fromJson(item))
+      files = (json.decode(await f.readAsString()) as List)
+          .map((item) => LocalFile.fromJson(item))
           .toList();
     }
   }
@@ -36,7 +36,7 @@ class Global {
   // (await _getFoldersFile()).writeAsString(folders.toString());
 
   static saveFoldersFile() async =>
-      await (await _getFoldersFile()).writeAsString(json.encode(folders));
+      await (await _getFoldersFile()).writeAsString(json.encode(files));
 
   // _prefs.setString("profile", jsonEncode(profile.toJson()));
   static Future<File> _getProfileFile() async {

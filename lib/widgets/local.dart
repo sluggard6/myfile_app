@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,11 @@ import 'package:flutter/rendering.dart';
 import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/components/file_extentions.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:myfile_app/models/folder.dart';
+import 'package:myfile_app/models/local_file.dart';
 import 'package:myfile_app/widgets/image_view.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import 'image_file_view.dart';
 
 class LocalFolder extends StatefulWidget {
   const LocalFolder({Key? key}) : super(key: key);
@@ -17,7 +21,7 @@ class LocalFolder extends StatefulWidget {
 }
 
 class LocalFolderState extends State<LocalFolder> {
-  final _folders = Global.folders;
+  final _folders = Global.files;
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +44,12 @@ class LocalFolderState extends State<LocalFolder> {
           PopupMenuButton(itemBuilder: (context) {
             return [
               PopupMenuItem(
-                child: const Text('导入本地书籍'),
+                child: const Text('导入本地目录'),
                 onTap: _selectedDirectory,
+              ),
+              PopupMenuItem(
+                child: const Text('导入本地文件'),
+                onTap: _selectedZipFile,
               )
             ];
           })
@@ -58,11 +66,25 @@ class LocalFolderState extends State<LocalFolder> {
       onTap: () {
         String? name = _folders[i].name;
         String? path = _folders[i].path;
+        String? type = _folders[i].type;
+
         if (path != null) {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (BuildContext context) {
-            return ImageViewer(path: path);
-          }));
+          if (type == 'folder') {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (BuildContext context) {
+              return ImageViewer(path: path);
+            }));
+          } else if (type == 'filse') {
+            var bytes;
+            Future.delayed(Duration.zero, () {
+              bytes = File(path).readAsBytes();
+            }).then((value) {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return ImageFileViewer(bytes: bytes);
+              }));
+            });
+          } else {}
         } else {
           Fluttertoast.showToast(msg: '找不到 $name ...');
         }
@@ -102,10 +124,35 @@ class LocalFolderState extends State<LocalFolder> {
     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
     if (selectedDirectory != null) {
       var d = Directory(selectedDirectory);
-      Folder f = Folder();
+      LocalFile f = LocalFile();
       f.name = d.name;
       f.path = selectedDirectory;
-      Global.folders.add(f);
+      f.type = 'folder';
+      Global.files.add(f);
+      Global.saveFoldersFile();
+      setState(() {});
+    }
+  }
+
+  _selectedZipFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['zip'],
+        allowMultiple: false);
+    if (kIsWeb) {
+      if (result != null && result.files.first.bytes != null) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (BuildContext context) {
+          return ImageFileViewer(bytes: result.files.first.bytes as Uint8List);
+        }));
+      }
+    } else {
+      var file = result?.files.first;
+      LocalFile f = LocalFile();
+      f.name = file?.name;
+      f.path = file?.path;
+      f.type = 'file';
+      Global.files.add(f);
       Global.saveFoldersFile();
       setState(() {});
     }

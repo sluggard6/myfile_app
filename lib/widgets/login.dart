@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/components/http.dart';
 import 'package:myfile_app/models/user.dart';
+import 'package:myfile_app/routes/main.dart';
 import 'package:provider/provider.dart';
 
 class LoginRoute extends StatefulWidget {
@@ -104,14 +105,15 @@ class _LoginRouteState extends State<LoginRoute> {
   void _onLogin() async {
     // 提交前，先验证各个表单字段是否合法
     if ((_formKey.currentState as FormState).validate()) {
-      // showLoading(context);
+      showLoading(context);
       User? user;
       try {
-        user = await Git(context)
+        user = await MyFileHttp(context)
             .login(_unameController.text, _pwdController.text);
         // 因为登录页返回后，首页会build，所以我们传false，更新user后不触发更新
-        Provider.of<UserModel>(context, listen: false).user = user;
+        Provider.of<UserModel>(context, listen: true).user = user;
       } catch (e) {
+        // print(e);
         //登录失败则提示
         // if (e.response.statusCode == 401) {
         //   showToast(GmLocalizations.of(context).userNameOrPasswordWrong);
