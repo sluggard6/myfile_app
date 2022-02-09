@@ -34,10 +34,7 @@ class _GuideState extends State<Guide> {
   }
 
   _mainPage() {
-    return ChangeNotifierProvider(
-      create: (BuildContext context) => UserModel(),
-      child: const MainPageWidget(),
-    );
+    return const MainPageWidget();
   }
 
   _buildGuideItem() {

@@ -24,7 +24,7 @@ class _MainPageWidgetState extends State<MainPageWidget> {
       if (user.isLogin) {
         return LibraryListPage();
       } else {
-        return GoLogin();
+        return const GoLogin();
       }
     }),
     const LocalFolder(),

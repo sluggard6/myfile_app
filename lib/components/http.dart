@@ -23,7 +23,7 @@ class MyFileHttp {
   Options? _options;
 
   static Dio dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.0.107:5678/',
+    baseUrl: 'http://127.0.0.1:5678/',
     headers: {
       // HttpHeaders.acceptHeader: "application/vnd.github.squirrel-girl-preview,"
       // "application/vnd.github.symmetra-preview+json",

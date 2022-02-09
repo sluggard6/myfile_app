@@ -7,6 +7,7 @@ import 'package:myfile_app/models/profile.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'http.dart';
 import 'net_cache.dart';
 
 class Global {
@@ -51,6 +52,11 @@ class Global {
   }
 
   static bool get isLogined => profile.user == null;
+
+  static Future init() async {
+    loadFolders();
+    MyFileHttp.init();
+  }
 }
 
 class ProfileChangeNotifier extends ChangeNotifier {
