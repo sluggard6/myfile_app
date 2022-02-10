@@ -37,6 +37,7 @@ dependencies:
   file_picker: ^4.3.3
   photo_view: ^0.13.0
   archive: ^3.1.11
+  permission_handler: ^8.3.0
   flutter_localizations:
     sdk: flutter
 

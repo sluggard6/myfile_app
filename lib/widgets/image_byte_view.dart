@@ -1,43 +1,34 @@
-import 'dart:io';
+import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:myfile_app/components/file_extentions.dart';
-import 'package:myfile_app/routes/main.dart';
 import 'package:photo_view/photo_view.dart';
 
-class ImageFileViewer extends StatefulWidget {
-  const ImageFileViewer({Key? key, required this.path}) : super(key: key);
-  // final Uint8List bytes;
-  final String path;
+class ImageByteViewer extends StatefulWidget {
+  const ImageByteViewer({Key? key, required this.bytes}) : super(key: key);
+  final Uint8List bytes;
+  // final String path;
 
   @override
-  ImageFileViewerState createState() => ImageFileViewerState();
+  ImageByteViewerState createState() => ImageByteViewerState();
 }
 
-class ImageFileViewerState extends State<ImageFileViewer> {
+class ImageByteViewerState extends State<ImageByteViewer> {
   List<ArchiveFile> files = [];
 
   ArchiveFile getImage(int i) => files[i];
 
-  void _decodeFile() {
-    Fluttertoast.showToast(msg: widget.path);
-    showLoading(context);
-    files = ZipDecoder()
-        .decodeBytes(File(Uri.decodeComponent(widget.path)).readAsBytesSync())
-        .files;
-    Navigator.of(context).pop();
+  Future<void> _decodeFile() async {
+    files = ZipDecoder().decodeBytes(widget.bytes).files;
   }
 
   @override
   void initState() {
     super.initState();
-    _decodeFile();
-    setState(() {});
-    // Future.delayed(Duration.zero, _decodeFile).then((value) {
-    //   setState(() {});
-    // });
+    Future.delayed(Duration.zero, _decodeFile).then((value) {
+      setState(() {});
+    });
   }
 
   @override

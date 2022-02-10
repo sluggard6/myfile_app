@@ -10,7 +10,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfile_app/models/local_file.dart';
 import 'package:myfile_app/widgets/image_view.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:permission_handler/permission_handler.dart';
+// import 'package:permiss'
 
+import 'image_byte_view.dart';
 import 'image_file_view.dart';
 
 class LocalFolder extends StatefulWidget {
@@ -63,7 +66,7 @@ class LocalFolderState extends State<LocalFolder> {
   Widget _itemBuilder(BuildContext context, int i) {
     return ListTile(
       title: Text(_folders[i].name ?? '未命名'),
-      onTap: () {
+      onTap: () async {
         String? name = _folders[i].name;
         String? path = _folders[i].path;
         String? type = _folders[i].type;
@@ -74,16 +77,31 @@ class LocalFolderState extends State<LocalFolder> {
                 .push(MaterialPageRoute(builder: (BuildContext context) {
               return ImageViewer(path: path);
             }));
-          } else if (type == 'filse') {
-            var bytes;
-            Future.delayed(Duration.zero, () {
-              bytes = File(path).readAsBytes();
-            }).then((value) {
+          } else if (type == 'file') {
+            // Uint8List bytes;
+            // Future.delayed(Duration.zero, () async {
+            //   return await File(path).readAsBytes();
+            // }).then((value) {
+            // Navigator.of(context)
+            //     .push(MaterialPageRoute(builder: (BuildContext context) {
+            //   return ImageFileViewer(bytes: value);
+            // }));
+            // });
+            // var status = await Permission.storage.status;
+            // if (status.isGranted) {
+            //   Navigator.of(context)
+            //       .push(MaterialPageRoute(builder: (BuildContext context) {
+            //     return ImageFileViewer(path: path);
+            //   }));
+            // } else {
+            bool isShown = await Permission.storage.shouldShowRequestRationale;
+            if (await Permission.storage.request().isGranted) {
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
-                return ImageFileViewer(bytes: bytes);
+                return ImageFileViewer(path: path);
               }));
-            });
+            }
+            // }
           } else {}
         } else {
           Fluttertoast.showToast(msg: '找不到 $name ...');
@@ -139,19 +157,21 @@ class LocalFolderState extends State<LocalFolder> {
         type: FileType.custom,
         allowedExtensions: ['zip'],
         allowMultiple: false);
+    if (result == null) return;
     if (kIsWeb) {
-      if (result != null && result.files.first.bytes != null) {
+      if (result.files.first.bytes != null) {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
-          return ImageFileViewer(bytes: result.files.first.bytes as Uint8List);
+          return ImageByteViewer(bytes: result.files.first.bytes as Uint8List);
         }));
       }
     } else {
-      var file = result?.files.first;
+      var file = result.files.first;
       LocalFile f = LocalFile();
-      f.name = file?.name;
-      f.path = file?.path;
+      f.name = file.name;
+      f.path = file.identifier?.substring(7);
       f.type = 'file';
+      print(f);
       Global.files.add(f);
       Global.saveFoldersFile();
       setState(() {});
