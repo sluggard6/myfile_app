@@ -4,7 +4,6 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfile_app/components/file_extentions.dart';
-import 'package:myfile_app/routes/main.dart';
 import 'package:photo_view/photo_view.dart';
 
 class ImageFileViewer extends StatefulWidget {
@@ -23,17 +22,17 @@ class ImageFileViewerState extends State<ImageFileViewer> {
 
   void _decodeFile() {
     Fluttertoast.showToast(msg: widget.path);
-    showLoading(context);
     files = ZipDecoder()
         .decodeBytes(File(Uri.decodeComponent(widget.path)).readAsBytesSync())
         .files;
-    Navigator.of(context).pop();
+    Fluttertoast.showToast(msg: "success decode files : ${files.length}");
   }
 
   @override
   void initState() {
     super.initState();
     _decodeFile();
+    // Navigator.of(context).pop();
     setState(() {});
     // Future.delayed(Duration.zero, _decodeFile).then((value) {
     //   setState(() {});
@@ -48,19 +47,26 @@ class ImageFileViewerState extends State<ImageFileViewer> {
   Widget _itemBuilder(BuildContext context, int index) {
     // return Image(image: AssetImage(widget.getImage(index)));
     return GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (
-          BuildContext context,
-        ) {
-          // return Center(child: Image.file(File(getImage(index))));
-          return Container(
-            child: PhotoView(
-              imageProvider: MemoryImage(files[index].content),
-            ),
-          );
-        }));
-      },
-      child: Image.memory(files[index].content),
-    );
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (
+            BuildContext context,
+          ) {
+            // return Center(child: Image.file(File(getImage(index))));
+            return Container(
+              child: PhotoView(
+                imageProvider: MemoryImage(files[index].content),
+              ),
+            );
+          }));
+        },
+        child: _getImage(files[index]));
+  }
+
+  Widget _getImage(ArchiveFile file) {
+    if (file.isImage) {
+      return Image.memory(file.content);
+    } else {
+      return Text(file.name);
+    }
   }
 }

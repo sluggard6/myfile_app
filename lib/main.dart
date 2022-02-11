@@ -4,23 +4,26 @@ import 'package:provider/provider.dart';
 
 import 'components/global.dart';
 
-void main() => Global.init().then((value) {
-      runApp(
-        MultiProvider(
-            providers: [
-              ChangeNotifierProvider(
-                create: (context) => UserModel(),
-              ),
-            ],
-            child: const MaterialApp(
-              title: 'My File',
-              // theme: ,
-              home: SafeArea(
-                child: MyFile(),
-              ),
-            )),
-      );
-    });
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Global.init().then((value) {
+    runApp(
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (context) => UserModel(),
+            ),
+          ],
+          child: const MaterialApp(
+            title: 'My File',
+            // theme: ,
+            home: SafeArea(
+              child: MyFile(),
+            ),
+          )),
+    );
+  });
+}
 
 class MyFile extends StatelessWidget {
   const MyFile({Key? key}) : super(key: key);
@@ -31,6 +34,14 @@ class MyFile extends StatelessWidget {
       body: Guide(),
     );
   }
+}
+
+Widget showProgress(double value) {
+  return LinearProgressIndicator(
+    backgroundColor: Colors.grey[200],
+    valueColor: const AlwaysStoppedAnimation(Colors.blue),
+    value: value,
+  );
 }
 
 // class MainBody extends StatefulWidget {

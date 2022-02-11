@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:permission_handler/permission_handler.dart';
 // import 'package:permiss'
 
+import '../routes/main.dart';
 import 'image_byte_view.dart';
 import 'image_file_view.dart';
 
@@ -96,6 +97,7 @@ class LocalFolderState extends State<LocalFolder> {
             // } else {
             bool isShown = await Permission.storage.shouldShowRequestRationale;
             if (await Permission.storage.request().isGranted) {
+              // showLoading(context);
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return ImageFileViewer(path: path);
