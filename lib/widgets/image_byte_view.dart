@@ -5,6 +5,8 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
+import '../components/file_extentions.dart';
+
 class ImageByteViewer extends StatefulWidget {
   const ImageByteViewer({Key? key, required this.bytes}) : super(key: key);
   final Uint8List bytes;
@@ -21,6 +23,9 @@ class ImageByteViewerState extends State<ImageByteViewer> {
 
   Future<void> _decodeFile() async {
     files = ZipDecoder().decodeBytes(widget.bytes).files;
+    files.sort((f1, f2) {
+      return FileUtil.compileFileName(f1, f2);
+    });
   }
 
   @override

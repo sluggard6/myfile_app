@@ -27,7 +27,9 @@ class ImageViewerState extends State<ImageViewer> {
           .where((event) => event.isImage)
           .map((event) => event.name)
           .toList();
-      index.sort();
+      index.sort((o1, o2) {
+        return FileUtil.compileFileName(o1, o2);
+      });
       await _saveIndex(f);
     }
     // return index;

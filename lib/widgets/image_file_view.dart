@@ -3,7 +3,6 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfile_app/components/file_extentions.dart';
-import 'package:photo_view/photo_view.dart';
 
 class ImageFileViewer extends StatefulWidget {
   const ImageFileViewer({Key? key, required this.path}) : super(key: key);
@@ -22,20 +21,13 @@ class ImageFileViewerState extends State<ImageFileViewer> {
   static final RegExp exp = RegExp(r"[0-9]+");
 
   void _decodeFile() {
-    Fluttertoast.showToast(msg: widget.path);
+    Fluttertoast.showToast(msg: Uri.decodeComponent(widget.path));
     files = ZipDecoder()
         .decodeBytes(File(Uri.decodeComponent(widget.path)).readAsBytesSync())
         .files;
-    files.sort(((f1, f2) {
-      print("${f1.fileName}:${f2.fileName}");
-      if (f1.fileName.isEmpty || !f1.isImage) return 1;
-      if (f2.fileName.isEmpty || !f2.isImage) return -1;
-      String n1 = f1.fileName.substring(
-          exp.firstMatch(f1.fileName)!.start, exp.firstMatch(f1.fileName)?.end);
-      String n2 = f2.fileName.substring(
-          exp.firstMatch(f2.fileName)!.start, exp.firstMatch(f2.fileName)?.end);
-      return int.parse(n1) - int.parse(n2);
-    }));
+    files.sort((f1, f2) {
+      return FileUtil.compileFileName(f1, f2);
+    });
     Fluttertoast.showToast(msg: "success decode files : ${files.length}");
   }
 
@@ -52,32 +44,25 @@ class ImageFileViewerState extends State<ImageFileViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: _itemBuilder, itemCount: files.length);
+    // InteractiveViewer.builder(builder: builder)
+    return InteractiveViewer(
+        child: ListView.builder(
+            itemBuilder: _itemBuilder, itemCount: files.length));
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
-    // return Image(image: AssetImage(widget.getImage(index)));
     return GestureDetector(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (
-            BuildContext context,
-          ) {
-            return Container(
-              child: PhotoView(
-                imageProvider: MemoryImage(files[index].content),
-              ),
-            );
-            // return Column(
-            //   crossAxisAlignment: CrossAxisAlignment.center,
-            //   children: [
-            //     Text(files[index].name),
-            //     PhotoView(
-            //       imageProvider: MemoryImage(files[index].content),
-            //     )
-            //   ],
-            // );
-          }));
-        },
+        // onTap: () {
+        //   Navigator.push(context, MaterialPageRoute(builder: (
+        //     BuildContext context,
+        //   ) {
+        //     return Container(
+        //       child: PhotoView(
+        //         imageProvider: MemoryImage(files[index].content),
+        //       ),
+        //     );
+        //   }));
+        // },
         child: _getImage(files[index]));
   }
 
