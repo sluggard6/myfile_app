@@ -13,7 +13,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:permission_handler/permission_handler.dart';
 // import 'package:permiss'
 
-import '../routes/main.dart';
 import 'image_byte_view.dart';
 import 'image_file_view.dart';
 
@@ -173,7 +172,6 @@ class LocalFolderState extends State<LocalFolder> {
       f.name = file.name;
       f.path = file.identifier?.substring(7);
       f.type = 'file';
-      print(f);
       Global.files.add(f);
       Global.saveFoldersFile();
       setState(() {});
