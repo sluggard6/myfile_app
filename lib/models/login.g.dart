@@ -1,22 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'profile.dart';
+part of 'login.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile()
+Login _$LoginFromJson(Map<String, dynamic> json) => Login()
   ..user = json['user'] == null
       ? null
       : User.fromJson(json['user'] as Map<String, dynamic>)
-  ..cacheConfig = json['cacheConfig'] == null
-      ? null
-      : CacheConfig.fromJson(json['cacheConfig'] as Map<String, dynamic>)
   ..token = json['token'] as String?;
 
-Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
+Map<String, dynamic> _$LoginToJson(Login instance) => <String, dynamic>{
       'user': instance.user,
-      'cacheConfig': instance.cacheConfig,
       'token': instance.token,
     };

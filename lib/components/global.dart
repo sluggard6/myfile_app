@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myfile_app/models/local_file.dart';
+import 'package:myfile_app/models/login.dart';
 import 'package:myfile_app/models/profile.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:path_provider/path_provider.dart';
@@ -82,6 +83,14 @@ class UserModel extends ProfileChangeNotifier {
     if (user?.id != _profile.user?.id) {
       // _profile.lastLogin = user?.login;
       _profile.user = user;
+      notifyListeners();
+    }
+  }
+
+  set login(Login? login) {
+    if (login?.user?.id != _profile.user?.id) {
+      _profile.user = login?.user;
+      _profile.token = login?.token;
       notifyListeners();
     }
   }

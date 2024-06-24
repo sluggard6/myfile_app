@@ -4,7 +4,7 @@ import 'package:path/path.dart' as path;
 
 const TAG = "\$";
 const SRC = "./jsons"; //JSON 目录
-const DIST = "lib/models/"; //输出model目录
+const DIST = "lib/models2/"; //输出model目录
 
 String camelCase2_(String camelCase) {
   RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');

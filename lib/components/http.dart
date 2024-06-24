@@ -3,8 +3,11 @@ import 'dart:io';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myfile_app/models/http_result.dart';
+import 'package:myfile_app/models/library.dart';
+import 'package:myfile_app/models/login.dart';
 import 'package:myfile_app/models/user.dart';
 
 import 'global.dart';
@@ -23,7 +26,7 @@ class MyFileHttp {
   Options? _options;
 
   static Dio dio = Dio(BaseOptions(
-    baseUrl: 'http://127.0.0.1:5678/',
+    baseUrl: 'http://127.0.0.1:5678/myfile/',
     headers: {
       // HttpHeaders.acceptHeader: "application/vnd.github.squirrel-girl-preview,"
       // "application/vnd.github.symmetra-preview+json",
@@ -42,6 +45,7 @@ class MyFileHttp {
         handler.next(e);
       },
     ));
+    // dio.interceptors.add(Cookie)
     if (!Global.isRelease &&
         dio.httpClientAdapter is DefaultHttpClientAdapter) {
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -56,12 +60,26 @@ class MyFileHttp {
     }
   }
 
-  Future<User> login(String username, String password) async {
+  Future<Login> login(String username, String password) async {
     var r = await dio.post('user/login',
         options: Options(extra: {"noCache": true}),
         data: json.encode({"username": username, "password": password}));
     // dio.fetch(requestOptions)
     HttpResult res = r.data as HttpResult;
-    return User.fromJson(res.data?['user'] ?? {});
+    return Login.fromJson(res.data ?? {});
+    // return User.fromJson(res.data?['user'] ?? {});
+  }
+
+  Future<List<Library>> librarys() async {
+    var r =
+        await dio.get('/library', options: Options(extra: {"noCache": true}));
+    HttpResult res = r.data as HttpResult;
+    if (kDebugMode) {
+      print(res.data.runtimeType);
+    }
+    return json
+        .decode(res.data as String)
+        .map((m) => Library.fromJson(m))
+        .toList();
   }
 }
