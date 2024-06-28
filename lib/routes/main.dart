@@ -14,7 +14,7 @@ class _MainPageWidgetState extends State<MainPageWidget> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> pages = <Widget>[
-    LoginRoute(),
+    const LoginRoute(),
     const Text(
       'Index 0: Home',
       style: optionStyle,
@@ -103,7 +103,7 @@ void showLoading(context, [String? text]) {
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Text(
                     text ?? 'Loading...',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
               ],

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/components/http.dart';
+import 'package:myfile_app/main.dart';
 import 'package:myfile_app/models/login.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:myfile_app/routes/main.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginRoute extends StatefulWidget {
@@ -107,15 +109,23 @@ class _LoginRouteState extends State<LoginRoute> {
     // 提交前，先验证各个表单字段是否合法
     if ((_formKey.currentState as FormState).validate()) {
       showLoading(context);
-      Login? login;
+      User? user;
       try {
-        login = await MyFileHttp(context)
+        user = await MyFileHttp(context)
             .login(_unameController.text, _pwdController.text);
         // 因为登录页返回后，首页会build，所以我们传false，更新user后不触发更新
-        Provider.of<UserModel>(context, listen: false).login = login;
-        print(login.user?.username);
+        Provider.of<UserModel>(context, listen: false).user = user;
+        print(user.username);
+        // MyFileHttp(context)
+        //     .login(_unameController.text, _pwdController.text)
+        //     .then((value) {
+        //   user = value;
+        //   Provider.of<UserModel>(context, listen: false).user = user;
+        //   print(user?.username);
+        // });
       } catch (e, s) {
         print('$e\n$s');
+        showToast("$e", context: context);
         //登录失败则提示
         // if (e.response.statusCode == 401) {
         //   showToast(GmLocalizations.of(context).userNameOrPasswordWrong);
@@ -126,7 +136,7 @@ class _LoginRouteState extends State<LoginRoute> {
         // 隐藏loading框
         Navigator.of(context).pop();
       }
-      if (login?.user != null) {
+      if (user != null) {
         // 返回
         Navigator.of(context).pop();
       }

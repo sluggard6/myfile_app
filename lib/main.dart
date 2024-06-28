@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myfile_app/widgets/guide.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import 'components/global.dart';
@@ -9,18 +10,20 @@ void main() {
   Global.init().then((value) {
     runApp(
       MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              create: (context) => UserModel(),
-            ),
-          ],
-          child: const MaterialApp(
-            title: 'My File',
-            // theme: ,
-            home: SafeArea(
-              child: MyFile(),
-            ),
-          )),
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => UserModel(),
+          ),
+        ],
+        child: const OKToast(
+            child: MaterialApp(
+          title: 'My File',
+          // theme: ,
+          home: SafeArea(
+            child: MyFile(),
+          ),
+        )),
+      ),
     );
   });
 }

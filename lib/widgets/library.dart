@@ -20,12 +20,24 @@ class _LibraryListPageState extends State<LibraryListPage> {
     //   if (user.isLogin) {
     //     return const LoginRoute();
     //   } else {
+    final List<int> colorCodes = <int>[600, 500, 100];
     return Center(
       child: FutureBuilder<List<Library>>(
           future: _getLibrarys(context),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return Text("getLibrary count:${snapshot.data.length}");
+              // return Text("getLibrary count:${snapshot.data}");
+              return ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 50,
+                    color: Colors.amber[colorCodes[index % 2]],
+                    child: Text('${snapshot.data[index].name}'),
+                  );
+                },
+              );
             } else {
               return const CircularProgressIndicator();
             }
