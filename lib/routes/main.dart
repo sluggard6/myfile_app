@@ -103,7 +103,7 @@ void showLoading(context, [String? text]) {
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Text(
                     text ?? 'Loading...',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
               ],

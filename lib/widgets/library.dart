@@ -24,12 +24,8 @@ class _LibraryListPageState extends State<LibraryListPage> {
   Widget build(BuildContext context) {
     debugPrint(context.toString());
     return Consumer<UserModel>(builder: (context, user, child) {
-      Widget widget;
-      debugPrint(
-          "------------------------------------------------------------------------------------" +
-              user.isLogin.toString());
       if (!user.isLogin) {
-        return LoginRoute();
+        return const LoginRoute();
       } else {
         librarys = user.user?.librarys ?? [];
         return InteractiveViewer(
