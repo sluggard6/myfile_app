@@ -9,7 +9,9 @@ class Profile {
 
   User? user;
   CacheConfig? cacheConfig;
-  
-  factory Profile.fromJson(Map<String,dynamic> json) => _$ProfileFromJson(json);
+  String? token;
+
+  factory Profile.fromJson(Map<String, dynamic> json) =>
+      _$ProfileFromJson(json);
   Map<String, dynamic> toJson() => _$ProfileToJson(this);
 }

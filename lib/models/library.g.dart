@@ -8,9 +8,13 @@ part of 'library.dart';
 
 Library _$LibraryFromJson(Map<String, dynamic> json) => Library()
   ..id = json['id'] as num?
-  ..name = json['name'] as String?;
+  ..name = json['name'] as String?
+  ..rootFolder = json['rootFolder'] == null
+      ? null
+      : Folder.fromJson(json['rootFolder'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$LibraryToJson(Library instance) => <String, dynamic>{
       'id': instance.id,
-      'username': instance.name,
+      'name': instance.name,
+      'rootFolder': instance.rootFolder,
     };

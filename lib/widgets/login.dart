@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/components/http.dart';
+import 'package:myfile_app/main.dart';
+import 'package:myfile_app/models/login.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:myfile_app/routes/main.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginRoute extends StatefulWidget {
@@ -45,7 +48,7 @@ class _LoginRouteState extends State<LoginRoute> {
               TextFormField(
                   autofocus: _nameAutoFocus,
                   controller: _unameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     // labelText: gm.userName,
                     // hintText: gm.userNameOrEmail,
                     labelText: '用户名',
@@ -65,7 +68,7 @@ class _LoginRouteState extends State<LoginRoute> {
                     // hintText: gm.password,
                     labelText: '密码',
                     hintText: '请输入密码',
-                    prefixIcon: Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
                           pwdShow ? Icons.visibility_off : Icons.visibility),
@@ -112,8 +115,17 @@ class _LoginRouteState extends State<LoginRoute> {
             .login(_unameController.text, _pwdController.text);
         // 因为登录页返回后，首页会build，所以我们传false，更新user后不触发更新
         Provider.of<UserModel>(context, listen: false).user = user;
+        print(user.username);
+        // MyFileHttp(context)
+        //     .login(_unameController.text, _pwdController.text)
+        //     .then((value) {
+        //   user = value;
+        //   Provider.of<UserModel>(context, listen: false).user = user;
+        //   print(user?.username);
+        // });
       } catch (e, s) {
         print('$e\n$s');
+        showToast("$e", context: context);
         //登录失败则提示
         // if (e.response.statusCode == 401) {
         //   showToast(GmLocalizations.of(context).userNameOrPasswordWrong);
