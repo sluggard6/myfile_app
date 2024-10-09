@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/components/http.dart';
-import 'package:myfile_app/main.dart';
-import 'package:myfile_app/models/login.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:myfile_app/routes/main.dart';
 import 'package:oktoast/oktoast.dart';
@@ -21,6 +20,7 @@ class _LoginRouteState extends State<LoginRoute> {
   bool pwdShow = false; //密码是否显示明文
   GlobalKey _formKey = GlobalKey<FormState>();
   bool _nameAutoFocus = true;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -35,9 +35,22 @@ class _LoginRouteState extends State<LoginRoute> {
   @override
   Widget build(BuildContext context) {
     // var gm = GmLocalizations.of(context);
-    return Scaffold(
+    return KeyboardListener(focusNode: _focusNode, 
+      onKeyEvent: (value) {
+        if(value.logicalKey == LogicalKeyboardKey.enter) {
+          // _onLogin()
+          // var button = _formKey.currentState?.widget;
+          // if(button is ElevatedButton) {
+          //   button.
+          // }
+          // _formKey.currentState.onPressed();
+          // print(_formKey.currentState);
+          _onLogin();
+        }
+      },
+    child: Scaffold(
       // appBar: AppBar(title: Text(gm.login)),
-      appBar: AppBar(title: Text('登陆')),
+      appBar: AppBar(title: const Text('登陆')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -88,21 +101,22 @@ class _LoginRouteState extends State<LoginRoute> {
               Padding(
                 padding: const EdgeInsets.only(top: 25),
                 child: ConstrainedBox(
-                  constraints: BoxConstraints.expand(height: 55.0),
+                  constraints: const BoxConstraints.expand(height: 55.0),
                   child: ElevatedButton(
+                      // key: _formKey,
                       // color: Theme.of(context).primaryColor,
                       onPressed: _onLogin,
                       // textColor: Colors.white,
-                      style: ButtonStyle(),
+                      style: const ButtonStyle(),
                       // child: Text(gm.login),
-                      child: Text('登陆')),
+                      child: const Text('登陆')),
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
+    ));
   }
 
   void _onLogin() async {
@@ -113,6 +127,10 @@ class _LoginRouteState extends State<LoginRoute> {
       try {
         user = await MyFileHttp(context)
             .login(_unameController.text, _pwdController.text);
+        if(user == null) {
+          showToast("登录失败");
+          return;
+        }
         // 因为登录页返回后，首页会build，所以我们传false，更新user后不触发更新
         Provider.of<UserModel>(context, listen: false).user = user;
         print(user.username);

@@ -47,12 +47,12 @@ class LocalFolderState extends State<LocalFolder> {
           PopupMenuButton(itemBuilder: (context) {
             return [
               PopupMenuItem(
-                child: const Text('导入本地目录'),
                 onTap: _selectedDirectory,
+                child: const Text('导入本地目录'),
               ),
               PopupMenuItem(
-                child: const Text('导入本地文件'),
                 onTap: _selectedZipFile,
+                child: const Text('导入本地文件'),
               )
             ];
           })

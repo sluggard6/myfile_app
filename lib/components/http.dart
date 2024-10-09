@@ -1,17 +1,17 @@
 import 'dart:convert';
 // import 'dart:html';
 import 'dart:io';
-import 'dart:math';
+// import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myfile_app/models/http_result.dart';
 import 'package:myfile_app/models/library.dart';
-import 'package:myfile_app/models/login.dart';
+// import 'package:myfile_app/models/login.dart';
 import 'package:myfile_app/models/user.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 
 import 'global.dart';
 
@@ -22,7 +22,7 @@ class MyFileHttp {
   //   _options = Options(extra: {"context": context});
   // }
   MyFileHttp([this.context]) {
-    _options = Options(extra: {"context": context});
+    _options = Options(extra: {"context": context, "noCache": true});
   }
 
   BuildContext? context;
@@ -46,7 +46,7 @@ class MyFileHttp {
     // 在调试模式下需要抓包调试，所以我们使用代理，并禁用HTTPS证书校验
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
-        print(options.data);
+        print("options.data : ${options.data}");
         handler.next(options);
       },
       onResponse: (e, handler) {
@@ -54,8 +54,17 @@ class MyFileHttp {
         handler.next(e);
       },
       onError: (error, handler) {
-        print(error);
-        showToast("网络错误");
+        print("error : $error}");
+        if (error.response?.statusCode == 401) {
+          var context = error.requestOptions.extra["context"];
+          if(context is BuildContext){
+            context.read<UserModel>().user = null;
+          }
+          showToast("登录信息失效");
+        }else{
+          showToast("网络错误");
+        }
+        handler.next(error);
       },
     ));
     // dio.interceptors.add(Cookie)
@@ -73,10 +82,11 @@ class MyFileHttp {
     }
   }
 
-  Future<User> login(String username, String password) async {
+  Future<User?> login(String username, String password) async {
     // try {
     var r = await dio.post('user/login',
-        options: Options(extra: {"noCache": true}),
+        // options: Options(extra: {"noCache": true}),
+        options: _options,
         data: json.encode({"username": username, "password": password}));
 
     // dio.fetch(requestOptions)
@@ -85,8 +95,10 @@ class MyFileHttp {
       var token = res.data['token'];
       Global.profile.token = token;
       dio.options.headers["Authorization"] = res.data?['token'];
+      return User.fromJson(res.data['user']);
     }
-    return User.fromJson(res.data['user']);
+    return null;
+    // return User.fromJson(res.data['user']);
     // return User.fromJson(res.data?['user'] ?? {});
     // } catch (e) {
     //   print("$e");
@@ -96,17 +108,13 @@ class MyFileHttp {
   }
 
   Future<List<Library>> librarys() async {
-    var r =
-        await dio.get('/library', options: Options(extra: {"noCache": true}));
-    HttpResult res = r.data as HttpResult;
-    if (kDebugMode) {
-      print(res.data.runtimeType);
+    try {
+      var r = await dio.get('/library', options: _options);
+      HttpResult res = r.data as HttpResult;
+      return List<Library>.from(
+          res.data.map((m) => Library.fromJson(m)).toList());
+    } catch (e, s) {
+      return [];
     }
-    return List<Library>.from(
-        res.data.map((m) => Library.fromJson(m)).toList());
-    // json
-    //     .decode(res.data as String)
-    //     .map((m) => Library.fromJson(m))
-    //     .toList();
   }
 }

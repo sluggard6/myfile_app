@@ -1,6 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/components/http.dart';
+import 'package:myfile_app/main.dart';
 import 'package:myfile_app/models/library.dart';
+import 'package:provider/provider.dart';
 
 class LibraryListPage extends StatefulWidget {
   @override
@@ -23,6 +27,7 @@ class _LibraryListPageState extends State<LibraryListPage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               // return Text("getLibrary count:${snapshot.data}");
+              print(snapshot.data);
               return ListView.builder(
                 padding: const EdgeInsets.all(8),
                 itemCount: snapshot.data.length,
@@ -48,14 +53,5 @@ class _LibraryListPageState extends State<LibraryListPage> {
     // showLoading(context);
     librarys = await MyFileHttp(context).librarys();
     return librarys;
-    // try {
-    //   librarys = await MyFileHttp(context).librarys();
-    // } catch (e, s) {
-    //   print('$e\n$s');
-    // } finally {
-    //   // 隐藏loading框
-    //   Navigator.of(context).pop();
-    // }
-    // return;
   }
 }
