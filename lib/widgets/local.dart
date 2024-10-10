@@ -167,10 +167,12 @@ class LocalFolderState extends State<LocalFolder> {
         }));
       }
     } else {
-      var file = result.files.first;
+      File file = File(result.files.single.path!);
+      // var file = result.files.first;
       LocalFile f = LocalFile();
       f.name = file.name;
-      f.path = file.identifier?.substring(7);
+      f.path = result.files.single.path!;
+      // f.path = file.identifier?.substring(7);
       f.type = 'file';
       Global.files.add(f);
       Global.saveFoldersFile();

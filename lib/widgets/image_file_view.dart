@@ -22,9 +22,12 @@ class ImageFileViewerState extends State<ImageFileViewer> {
 
   void _decodeFile() {
     Fluttertoast.showToast(msg: Uri.decodeComponent(widget.path));
-    files = ZipDecoder()
-        .decodeBytes(File(Uri.decodeComponent(widget.path)).readAsBytesSync())
-        .files;
+    // files = ZipDecoder()
+    //     .decodeBytes(File(Uri.decodeComponent(widget.path)).readAsBytesSync())
+    //     .files;
+    files.addAll(ZipDecoder()
+            .decodeBytes(File(Uri.decodeComponent(widget.path)).readAsBytesSync())
+            .files);
     files.sort((f1, f2) {
       return FileUtil.compileFileName(f1, f2);
     });
