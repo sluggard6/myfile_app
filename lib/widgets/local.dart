@@ -155,28 +155,38 @@ class LocalFolderState extends State<LocalFolder> {
 
   _selectedZipFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
+        withData: true,
         type: FileType.custom,
         allowedExtensions: ['zip'],
         allowMultiple: false);
     if (result == null) return;
-    if (kIsWeb) {
-      if (result.files.first.bytes != null) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (BuildContext context) {
-          return ImageByteViewer(bytes: result.files.first.bytes as Uint8List);
-        }));
-      }
-    } else {
-      File file = File(result.files.single.path!);
-      // var file = result.files.first;
-      LocalFile f = LocalFile();
-      f.name = file.name;
-      f.path = result.files.single.path!;
-      // f.path = file.identifier?.substring(7);
-      f.type = 'file';
-      Global.files.add(f);
-      Global.saveFoldersFile();
-      setState(() {});
+    // if (kIsWeb) {
+    if (result.files.single.bytes != null) {
+      List<int> list = List.from(result.files.single.bytes!);
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
+        return ImageByteViewer(bytes: list as Uint8List);
+      }));
     }
+    // } else if (Platform.isAndroid) {
+    //   print(result.files.single.path);
+    //   print(result.files.single.identifier);
+    //   print(Uri.decodeFull(result.files.single.identifier!));
+    //   String path = Uri.decodeFull(result.files.single.identifier!);
+    //   File file = File(result.files.single.path!);
+    //   // var file = result.files.first;
+    //   LocalFile f = LocalFile();
+    //   f.name = file.name;
+    //   f.path = result.files.single.path!;
+    //   // f.path = path.split("//")[1];
+    //   f.path = path;
+    //   // f.path = file.identifier?.substring(7);
+    //   f.type = 'file';
+    //   Global.files.add(f);
+    //   Global.saveFoldersFile();
+    //   setState(() {});
+    // } else {
+    //   print('Un supported platform');
+    // }
   }
 }

@@ -57,11 +57,11 @@ class MyFileHttp {
         print("error : $error}");
         if (error.response?.statusCode == 401) {
           var context = error.requestOptions.extra["context"];
-          if(context is BuildContext){
+          if (context is BuildContext) {
             context.read<UserModel>().user = null;
           }
           showToast("登录信息失效");
-        }else{
+        } else {
           showToast("网络错误");
         }
         handler.next(error);
