@@ -161,11 +161,13 @@ class LocalFolderState extends State<LocalFolder> {
         allowMultiple: false);
     if (result == null) return;
     // if (kIsWeb) {
+    // Uint8List? bytes = result.files.single.bytes;
+    // bytes.buffer.lengthInBytes;
     if (result.files.single.bytes != null) {
-      List<int> list = List.from(result.files.single.bytes!);
+      // List<int> list = List.from(result.files.single.bytes!);
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
-        return ImageByteViewer(bytes: list as Uint8List);
+        return ImageByteViewer(bytes: result.files.single.bytes!);
       }));
     }
     // } else if (Platform.isAndroid) {

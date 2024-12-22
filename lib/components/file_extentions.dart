@@ -32,8 +32,8 @@ class FileUtil {
     String f1 = analyzeName(o1);
     String f2 = analyzeName(o2);
     print("$f1:$f2");
-    if (f1.isEmpty || !isImage(f1)) return 1;
-    if (f2.isEmpty || !isImage(f2)) return -1;
+    if (f1.isEmpty || !isImage(f1) || exp.firstMatch(f1) == null) return 1;
+    if (f2.isEmpty || !isImage(f2) || exp.firstMatch(f2) == null) return -1;
     String n1 =
         f1.substring(exp.firstMatch(f1)!.start, exp.firstMatch(f1)?.end);
     String n2 =

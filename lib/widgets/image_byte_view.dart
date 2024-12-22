@@ -22,7 +22,9 @@ class ImageByteViewerState extends State<ImageByteViewer> {
   ArchiveFile getImage(int i) => files[i];
 
   Future<void> _decodeFile() async {
-    files = ZipDecoder().decodeBytes(widget.bytes).files;
+    // files = ZipDecoder().decodeBytes(widget.bytes).files;
+    files = [];
+    files.addAll(ZipDecoder().decodeBytes(widget.bytes).files);
     files.sort((f1, f2) {
       return FileUtil.compileFileName(f1, f2);
     });
