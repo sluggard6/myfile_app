@@ -9,7 +9,7 @@ import 'package:myfile_app/components/file_extentions.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfile_app/models/local_file.dart';
 import 'package:myfile_app/widgets/image_view.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+// import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:permission_handler/permission_handler.dart';
 // import 'package:permiss'
 
@@ -155,26 +155,30 @@ class LocalFolderState extends State<LocalFolder> {
 
   _selectedZipFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
+        withData: true,
         type: FileType.custom,
         allowedExtensions: ['zip'],
         allowMultiple: false);
     if (result == null) return;
-    if (kIsWeb) {
-      if (result.files.first.bytes != null) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (BuildContext context) {
-          return ImageByteViewer(bytes: result.files.first.bytes as Uint8List);
-        }));
-      }
-    } else {
-      var file = result.files.first;
-      LocalFile f = LocalFile();
-      f.name = file.name;
-      f.path = file.identifier?.substring(7);
-      f.type = 'file';
-      Global.files.add(f);
-      Global.saveFoldersFile();
-      setState(() {});
+    // if (kIsWeb) {
+    // ByteUtil.toReadable(result.files.single.bytes!, radix: Radix.dec)
+    // .getBytes();
+    if (result.files.single.bytes != null) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
+        return ImageByteViewer(
+            bytes: Uint8List.sublistView(result.files.single.bytes!, 0, null));
+      }));
     }
+    // } else {
+    //   var file = result.files.first;
+    //   LocalFile f = LocalFile();
+    //   f.name = file.name;
+    //   f.path = file.identifier?.substring(7);
+    //   f.type = 'file';
+    //   Global.files.add(f);
+    //   Global.saveFoldersFile();
+    //   setState(() {});
+    // }
   }
 }
