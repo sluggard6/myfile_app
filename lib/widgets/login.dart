@@ -15,10 +15,10 @@ class LoginRoute extends StatefulWidget {
 }
 
 class _LoginRouteState extends State<LoginRoute> {
-  TextEditingController _unameController = TextEditingController();
-  TextEditingController _pwdController = TextEditingController();
+  final TextEditingController _unameController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
   bool pwdShow = false; //密码是否显示明文
-  GlobalKey _formKey = GlobalKey<FormState>();
+  final GlobalKey _formKey = GlobalKey<FormState>();
   bool _nameAutoFocus = true;
   final FocusNode _focusNode = FocusNode();
 
@@ -35,88 +35,90 @@ class _LoginRouteState extends State<LoginRoute> {
   @override
   Widget build(BuildContext context) {
     // var gm = GmLocalizations.of(context);
-    return KeyboardListener(focusNode: _focusNode, 
-      onKeyEvent: (value) {
-        if(value.logicalKey == LogicalKeyboardKey.enter) {
-          // _onLogin()
-          // var button = _formKey.currentState?.widget;
-          // if(button is ElevatedButton) {
-          //   button.
-          // }
-          // _formKey.currentState.onPressed();
-          // print(_formKey.currentState);
-          _onLogin();
-        }
-      },
-    child: Scaffold(
-      // appBar: AppBar(title: Text(gm.login)),
-      appBar: AppBar(title: const Text('登陆')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.always,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                  autofocus: _nameAutoFocus,
-                  controller: _unameController,
-                  decoration: const InputDecoration(
-                    // labelText: gm.userName,
-                    // hintText: gm.userNameOrEmail,
-                    labelText: '用户名',
-                    hintText: '请输入用户名',
-                    prefixIcon: Icon(Icons.person),
+    return KeyboardListener(
+        focusNode: _focusNode,
+        onKeyEvent: (value) {
+          if (value.logicalKey == LogicalKeyboardKey.enter) {
+            // _onLogin()
+            // var button = _formKey.currentState?.widget;
+            // if(button is ElevatedButton) {
+            //   button.
+            // }
+            // _formKey.currentState.onPressed();
+            // print(_formKey.currentState);
+            _onLogin();
+          }
+        },
+        child: Scaffold(
+          // appBar: AppBar(title: Text(gm.login)),
+          appBar: AppBar(title: const Text('登陆')),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.always,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                      autofocus: _nameAutoFocus,
+                      controller: _unameController,
+                      decoration: const InputDecoration(
+                        // labelText: gm.userName,
+                        // hintText: gm.userNameOrEmail,
+                        labelText: '用户名',
+                        hintText: '请输入用户名',
+                        prefixIcon: Icon(Icons.person),
+                      ),
+                      // 校验用户名（不能为空）
+                      validator: (v) {
+                        // return v?.trim().isNotEmpty ? null : gm.userNameRequired;
+                        return v!.trim().isNotEmpty ? null : '请填写用户名';
+                      }),
+                  TextFormField(
+                    controller: _pwdController,
+                    autofocus: !_nameAutoFocus,
+                    decoration: InputDecoration(
+                        // labelText: gm.password,
+                        // hintText: gm.password,
+                        labelText: '密码',
+                        hintText: '请输入密码',
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(pwdShow
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              pwdShow = !pwdShow;
+                            });
+                          },
+                        )),
+                    obscureText: !pwdShow,
+                    //校验密码（不能为空）
+                    validator: (v) {
+                      // return v!.trim().isNotEmpty ? null : gm.passwordRequired;
+                      return v!.trim().isNotEmpty ? null : '请输入密码';
+                    },
                   ),
-                  // 校验用户名（不能为空）
-                  validator: (v) {
-                    // return v?.trim().isNotEmpty ? null : gm.userNameRequired;
-                    return v!.trim().isNotEmpty ? null : '请填写用户名';
-                  }),
-              TextFormField(
-                controller: _pwdController,
-                autofocus: !_nameAutoFocus,
-                decoration: InputDecoration(
-                    // labelText: gm.password,
-                    // hintText: gm.password,
-                    labelText: '密码',
-                    hintText: '请输入密码',
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                          pwdShow ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          pwdShow = !pwdShow;
-                        });
-                      },
-                    )),
-                obscureText: !pwdShow,
-                //校验密码（不能为空）
-                validator: (v) {
-                  // return v!.trim().isNotEmpty ? null : gm.passwordRequired;
-                  return v!.trim().isNotEmpty ? null : '请输入密码';
-                },
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints.expand(height: 55.0),
+                      child: ElevatedButton(
+                          // key: _formKey,
+                          // color: Theme.of(context).primaryColor,
+                          onPressed: _onLogin,
+                          // textColor: Colors.white,
+                          style: const ButtonStyle(),
+                          // child: Text(gm.login),
+                          child: const Text('登陆')),
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 25),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints.expand(height: 55.0),
-                  child: ElevatedButton(
-                      // key: _formKey,
-                      // color: Theme.of(context).primaryColor,
-                      onPressed: _onLogin,
-                      // textColor: Colors.white,
-                      style: const ButtonStyle(),
-                      // child: Text(gm.login),
-                      child: const Text('登陆')),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
 
   void _onLogin() async {
@@ -127,7 +129,7 @@ class _LoginRouteState extends State<LoginRoute> {
       try {
         user = await MyFileHttp(context)
             .login(_unameController.text, _pwdController.text);
-        if(user == null) {
+        if (user == null) {
           showToast("登录失败");
           return;
         }

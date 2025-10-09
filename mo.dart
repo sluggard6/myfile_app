@@ -31,12 +31,12 @@ void walk() {
       //下面生成模板
       var map = json.decode(file.readAsStringSync());
       //为了避免重复导入相同的包，我们用Set来保存生成的import语句。
-      var set = Set<String>();
+      var set = <String>{};
       StringBuffer attrs = StringBuffer();
       (map as Map<String, dynamic>).forEach((key, v) {
         if (key.startsWith("_")) return;
         //所有字段都定义为可空
-        attrs.write(getType(v, set, name) + "?");
+        attrs.write("${getType(v, set, name)}?");
         attrs.write(" ");
         attrs.write(key);
         attrs.writeln(";");

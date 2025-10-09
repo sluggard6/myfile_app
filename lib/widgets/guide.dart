@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:myfile_app/components/global.dart';
 import 'package:myfile_app/widgets/index.dart';
-import 'package:provider/provider.dart';
 
 class Guide extends StatefulWidget {
   const Guide({Key? key}) : super(key: key);
