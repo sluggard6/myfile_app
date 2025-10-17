@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:myfile_app/components/global.dart';
 
 extension FileExtention on FileSystemEntity {
   String get name {
@@ -31,13 +32,17 @@ class FileUtil {
   static int compileFileName(dynamic o1, dynamic o2) {
     String f1 = analyzeName(o1);
     String f2 = analyzeName(o2);
-    print("$f1:$f2");
+    Global.logger.d("$f1:$f2");
     if (f1.isEmpty || !isImage(f1) || exp.firstMatch(f1) == null) return 1;
     if (f2.isEmpty || !isImage(f2) || exp.firstMatch(f2) == null) return -1;
-    String n1 =
-        f1.substring(exp.firstMatch(f1)!.start, exp.firstMatch(f1)?.end);
-    String n2 =
-        f2.substring(exp.firstMatch(f2)!.start, exp.firstMatch(f2)?.end);
+    String n1 = f1.substring(
+      exp.firstMatch(f1)!.start,
+      exp.firstMatch(f1)?.end,
+    );
+    String n2 = f2.substring(
+      exp.firstMatch(f2)!.start,
+      exp.firstMatch(f2)?.end,
+    );
     return int.parse(n1) - int.parse(n2);
   }
 

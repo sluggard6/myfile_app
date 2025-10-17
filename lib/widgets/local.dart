@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
+// import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:myfile_app/components/file_extentions.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfile_app/models/local_file.dart';
 import 'package:myfile_app/widgets/image_view.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+// import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:permission_handler/permission_handler.dart';
 // import 'package:permiss'
 
@@ -17,7 +17,7 @@ import 'image_byte_view.dart';
 import 'image_file_view.dart';
 
 class LocalFolder extends StatefulWidget {
-  const LocalFolder({Key? key}) : super(key: key);
+  const LocalFolder({super.key});
 
   @override
   LocalFolderState createState() => LocalFolderState();
@@ -32,34 +32,38 @@ class LocalFolderState extends State<LocalFolder> {
       appBar: AppBar(
         title: const Text('本地图书'),
         actions: [
-          IconButton(
-              onPressed: () async {
-                String os = Platform.operatingSystem;
-                print(os);
-                // Or, use a predicate getter.
-                if (Platform.isMacOS) {
-                  print('is a Mac');
-                } else {
-                  print('is not a Mac');
-                }
-              },
-              icon: const Icon(Icons.list)),
-          PopupMenuButton(itemBuilder: (context) {
-            return [
-              PopupMenuItem(
-                onTap: _selectedDirectory,
-                child: const Text('导入本地目录'),
-              ),
-              PopupMenuItem(
-                onTap: _selectedZipFile,
-                child: const Text('导入本地文件'),
-              )
-            ];
-          })
+          // IconButton(
+          //     onPressed: () async {
+          //       String os = Platform.operatingSystem;
+          //       print(os);
+          //       // Or, use a predicate getter.
+          //       if (Platform.isMacOS) {
+          //         print('is a Mac');
+          //       } else {
+          //         print('is not a Mac');
+          //       }
+          //     },
+          //     icon: const Icon(Icons.list)),
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  onTap: _selectedDirectory,
+                  child: const Text('导入本地目录'),
+                ),
+                PopupMenuItem(
+                  onTap: _selectedZipFile,
+                  child: const Text('导入本地文件'),
+                ),
+              ];
+            },
+          ),
         ],
       ),
       body: ListView.builder(
-          itemBuilder: _itemBuilder, itemCount: _folders.length),
+        itemBuilder: _itemBuilder,
+        itemCount: _folders.length,
+      ),
     );
   }
 
@@ -73,10 +77,13 @@ class LocalFolderState extends State<LocalFolder> {
 
         if (path != null) {
           if (type == 'folder') {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (BuildContext context) {
-              return ImageViewer(path: path);
-            }));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return ImageViewer(path: path);
+                },
+              ),
+            );
           } else if (type == 'file') {
             // Uint8List bytes;
             // Future.delayed(Duration.zero, () async {
@@ -94,13 +101,18 @@ class LocalFolderState extends State<LocalFolder> {
             //     return ImageFileViewer(path: path);
             //   }));
             // } else {
-            bool isShown = await Permission.storage.shouldShowRequestRationale;
+            // bool isShown = await Permission.storage.shouldShowRequestRationale;
             if (await Permission.storage.request().isGranted) {
               // showLoading(context);
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (BuildContext context) {
-                return ImageFileViewer(path: path);
-              }));
+              if (context.mounted) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return ImageFileViewer(path: path);
+                    },
+                  ),
+                );
+              }
             }
             // }
           } else {}
@@ -111,35 +123,35 @@ class LocalFolderState extends State<LocalFolder> {
       onLongPress: () {
         final RenderSliverList button =
             context.findRenderObject()! as RenderSliverList;
-        final RenderBox overlay = Navigator.of(context)
-            .overlay!
-            .context
-            .findRenderObject()! as RenderBox;
+        final RenderBox overlay =
+            Navigator.of(context).overlay!.context.findRenderObject()!
+                as RenderBox;
         showMenu(
-            context: context,
-            position: RelativeRect.fromRect(
-              button.paintBounds,
-              // Rect.fromPoints(
-              //   button.localToGlobal(button.of, ancestor: overlay),
-              //   button.localToGlobal(
-              //       button.size.bottomRight(Offset.zero) + widget.offset,
-              //       ancestor: overlay),
-              // ),
-              Offset.zero & overlay.size,
+          context: context,
+          position: RelativeRect.fromRect(
+            button.paintBounds,
+            // Rect.fromPoints(
+            //   button.localToGlobal(button.of, ancestor: overlay),
+            //   button.localToGlobal(
+            //       button.size.bottomRight(Offset.zero) + widget.offset,
+            //       ancestor: overlay),
+            // ),
+            Offset.zero & overlay.size,
+          ),
+          items: [
+            PopupMenuItem(
+              child: const Text('删除'),
+              onTap: () {
+                Fluttertoast.showToast(msg: '删除了');
+              },
             ),
-            items: [
-              PopupMenuItem(
-                child: const Text('删除'),
-                onTap: () {
-                  Fluttertoast.showToast(msg: '删除了');
-                },
-              )
-            ]);
+          ],
+        );
       },
     );
   }
 
-  _selectedDirectory() async {
+  Future<void> _selectedDirectory() async {
     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
     if (selectedDirectory != null) {
       var d = Directory(selectedDirectory);
@@ -153,22 +165,26 @@ class LocalFolderState extends State<LocalFolder> {
     }
   }
 
-  _selectedZipFile() async {
+  Future<void> _selectedZipFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-        withData: true,
-        type: FileType.custom,
-        allowedExtensions: ['zip'],
-        allowMultiple: false);
+      withData: true,
+      type: FileType.custom,
+      allowedExtensions: ['zip'],
+      allowMultiple: false,
+    );
     if (result == null) return;
     // if (kIsWeb) {
     // Uint8List? bytes = result.files.single.bytes;
     // bytes.buffer.lengthInBytes;
     if (result.files.single.bytes != null) {
       // List<int> list = List.from(result.files.single.bytes!);
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (BuildContext context) {
-        return ImageByteViewer(bytes: result.files.single.bytes!);
-      }));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return ImageByteViewer(bytes: result.files.single.bytes!);
+          },
+        ),
+      );
     }
     // } else if (Platform.isAndroid) {
     //   print(result.files.single.path);

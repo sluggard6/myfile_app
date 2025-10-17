@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:myfile_app/models/local_file.dart';
 import 'package:myfile_app/models/login.dart';
 import 'package:myfile_app/models/profile.dart';
@@ -19,7 +20,9 @@ class Global {
 
   static NetCache netCache = NetCache();
 
-  static loadFolders() async {
+  static Logger logger = Logger();
+
+  static Future<void> loadFolders() async {
     File f = await _getFoldersFile();
     if (await f.exists()) {
       files = (json.decode(await f.readAsString()) as List)
@@ -31,13 +34,13 @@ class Global {
   static bool get isRelease => const bool.fromEnvironment("dart.vm.product");
 
   // 持久化Profile信息
-  static saveProfile() async =>
+  static Future<File> saveProfile() async =>
       (await (await _getProfileFile()).writeAsString(profile.toString()));
 
   // static saveFolders() async =>
   // (await _getFoldersFile()).writeAsString(folders.toString());
 
-  static saveFoldersFile() async =>
+  static Future<File> saveFoldersFile() async =>
       await (await _getFoldersFile()).writeAsString(json.encode(files));
 
   // _prefs.setString("profile", jsonEncode(profile.toJson()));

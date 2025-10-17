@@ -10,32 +10,25 @@ void main() {
   Global.init().then((value) {
     runApp(
       MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => UserModel(),
-          ),
-        ],
+        providers: [ChangeNotifierProvider(create: (context) => UserModel())],
         child: const OKToast(
-            child: MaterialApp(
-          title: 'My File',
-          // theme: ,
-          home: SafeArea(
-            child: MyFile(),
+          child: MaterialApp(
+            title: 'My File',
+            // theme: ,
+            home: SafeArea(child: MyFile()),
           ),
-        )),
+        ),
       ),
     );
   });
 }
 
 class MyFile extends StatelessWidget {
-  const MyFile({Key? key}) : super(key: key);
+  const MyFile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Guide(),
-    );
+    return const Scaffold(body: Guide());
   }
 }
 
@@ -55,7 +48,6 @@ Widget showProgress(double value) {
 // }
 
 // class _MainBodyState extends State<MainBody> {
-  
 
 //   @override
 //   Widget build(BuildContext context) {

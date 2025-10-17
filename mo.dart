@@ -20,14 +20,14 @@ void walk() {
   var list = src.listSync();
   var template = File("./model.template").readAsStringSync();
   File file;
-  list.forEach((f) {
+  for (var f in list) {
     if (FileSystemEntity.isFileSync(f.path)) {
       file = File(f.path);
       var paths = path.basename(f.path).split(".");
       String name = paths.first;
       String fileName = camelCase2_(name);
-      if (paths.last.toLowerCase() != "json" || name.startsWith("_")) return;
-      if (name.startsWith("_")) return;
+      if (paths.last.toLowerCase() != "json" || name.startsWith("_")) continue;
+      if (name.startsWith("_")) continue;
       //下面生成模板
       var map = json.decode(file.readAsStringSync());
       //为了避免重复导入相同的包，我们用Set来保存生成的import语句。
@@ -50,7 +50,7 @@ void walk() {
         attrs.toString(),
         className,
         className,
-        className
+        className,
       ]);
       var _import = set.join(";\r\n");
       _import += _import.isEmpty ? "" : ";";
@@ -58,7 +58,7 @@ void walk() {
       //将生成的模板输出
       File("$DIST$fileName.dart").writeAsStringSync(dist);
     }
-  });
+  }
 }
 
 String changeFirstChar(String str, [bool upper = true]) {

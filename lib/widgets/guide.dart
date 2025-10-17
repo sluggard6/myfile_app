@@ -2,87 +2,77 @@ import 'package:flutter/material.dart';
 import 'package:myfile_app/widgets/index.dart';
 
 class Guide extends StatefulWidget {
-  const Guide({Key? key}) : super(key: key);
+  const Guide({super.key});
 
   @override
-  _GuideState createState() => _GuideState();
+  State<Guide> createState() => GuideState();
 }
 
-class _GuideState extends State<Guide> {
+class GuideState extends State<Guide> {
   // 是否显示引导页面
-  bool _show = false;
-  get _guildItems => _buildGuideItem();
-
-  set show(bool show) => _show = show;
-  get shwo => _show;
+  bool show = false;
+  dynamic get _guildItems => _buildGuideItem();
 
   @override
   Widget build(BuildContext context) {
-    if (_show) {
-      return Scaffold(
-        body: PageView(
-          children: _guildItems,
-        ),
-      );
+    if (show) {
+      return Scaffold(body: PageView(children: _guildItems));
     } else {
       return _mainPage();
     }
   }
 
-  _mainPage() {
+  MainPageWidget _mainPage() {
     return const MainPageWidget();
   }
 
-  _buildGuideItem() {
+  List<GuideItem> _buildGuideItem() {
     //sleep(Duration(seconds: 5));
     return [
-      GuideItem(
-        body: const Text("1"),
-      ),
+      GuideItem(body: const Text("1")),
       GuideItem(body: const Text("2")),
-      GuideItem(
-        buttonPressed: _toIndex,
-      )
+      GuideItem(buttonPressed: _toIndex),
     ];
   }
 
-  _toIndex() {
-    _show = false;
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return _mainPage();
-    }));
+  void _toIndex() {
+    show = false;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return _mainPage();
+        },
+      ),
+    );
   }
 
   //_guidePages() {}
 }
 
 class GuideItem extends StatelessWidget {
-  VoidCallback? buttonPressed;
-  Widget? body;
+  final VoidCallback? buttonPressed;
+  final Widget? body;
 
-  GuideItem({Key? key, this.buttonPressed, this.body}) : super(key: key);
+  const GuideItem({super.key, this.buttonPressed, this.body});
 
   @override
   Widget build(BuildContext context) {
-    var children = <Widget>[
-      Center(
-        child: body ?? const Text('default'),
-      )
-    ];
+    var children = <Widget>[Center(child: body ?? const Text('default'))];
     if (buttonPressed != null) {
-      children.add(Positioned(
-        bottom: 200,
-        child: ElevatedButton(
-          child: const Text('go'),
-          onPressed: buttonPressed,
+      children.add(
+        Positioned(
+          bottom: 200,
+          child: ElevatedButton(
+            onPressed: buttonPressed,
+            child: const Text('go'),
+          ),
         ),
-      ));
+      );
     }
     return ConstrainedBox(
-        constraints: const BoxConstraints.expand(),
-        child: Stack(
-          alignment: Alignment.center,
-          children: children,
-        ));
+      constraints: const BoxConstraints.expand(),
+      child: Stack(alignment: Alignment.center, children: children),
+    );
   }
 }

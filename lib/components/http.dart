@@ -28,15 +28,17 @@ class MyFileHttp {
   BuildContext? context;
   Options? _options;
 
-  static Dio dio = Dio(BaseOptions(
-    baseUrl: 'http://127.0.0.1:5678/myfile/',
-    headers: {
-      HttpHeaders.authorizationHeader: Global.profile.token,
-      // HttpHeaders.contentTypeHeader: ContentType.json.toString(),
-      // HttpHeaders.acceptHeader: "application/vnd.github.squirrel-girl-preview,"
-      // "application/vnd.github.symmetra-preview+json",
-    },
-  ));
+  static Dio dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://www.myfile.live/myfile/',
+      headers: {
+        HttpHeaders.authorizationHeader: Global.profile.token,
+        // HttpHeaders.contentTypeHeader: ContentType.json.toString(),
+        // HttpHeaders.acceptHeader: "application/vnd.github.squirrel-girl-preview,"
+        // "application/vnd.github.symmetra-preview+json",
+      },
+    ),
+  );
 
   static void init() {
     // 添加缓存插件
@@ -44,37 +46,41 @@ class MyFileHttp {
     // 设置用户token（可能为null，代表未登录）
     // dio.options.headers[HttpHeaders.authorizationHeader] = Global.profile.token;
     // 在调试模式下需要抓包调试，所以我们使用代理，并禁用HTTPS证书校验
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        print("options.data : ${options.data}");
-        handler.next(options);
-      },
-      onResponse: (e, handler) {
-        e.data = HttpResult.fromJson(e.data);
-        handler.next(e);
-      },
-      onError: (error, handler) {
-        print("error : $error}");
-        if (error.response?.statusCode == 401) {
-          var context = error.requestOptions.extra["context"];
-          if (context is BuildContext) {
-            context.read<UserModel>().user = null;
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          Global.logger.d("options.data : ${options.data}");
+          // print("options.data : ${options.data}");
+          handler.next(options);
+        },
+        onResponse: (e, handler) {
+          e.data = HttpResult.fromJson(e.data);
+          handler.next(e);
+        },
+        onError: (error, handler) {
+          Global.logger.e("error : $error");
+          if (error.response?.statusCode == 401) {
+            var context = error.requestOptions.extra["context"];
+            if (context is BuildContext) {
+              context.read<UserModel>().user = null;
+            }
+            showToast("登录信息失效");
+          } else {
+            showToast("网络错误");
           }
-          showToast("登录信息失效");
-        } else {
-          showToast("网络错误");
-        }
-        handler.next(error);
-      },
-    ));
+          handler.next(error);
+        },
+      ),
+    );
     // dio.interceptors.add(Cookie)
     if (!Global.isRelease && dio.httpClientAdapter is IOHttpClientAdapter) {
       (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
         // client.findProxy = (uri) {
         //   return "PROXY 10.1.10.250:8888";
         // };
-        final HttpClient client =
-            HttpClient(context: SecurityContext(withTrustedRoots: false));
+        final HttpClient client = HttpClient(
+          context: SecurityContext(withTrustedRoots: false),
+        );
         // You can test the intermediate / root cert here. We just ignore it.
         client.badCertificateCallback = (cert, host, port) => true;
         return client;
@@ -84,10 +90,12 @@ class MyFileHttp {
 
   Future<User?> login(String username, String password) async {
     // try {
-    var r = await dio.post('user/login',
-        // options: Options(extra: {"noCache": true}),
-        options: _options,
-        data: json.encode({"username": username, "password": password}));
+    var r = await dio.post(
+      'user/login',
+      // options: Options(extra: {"noCache": true}),
+      options: _options,
+      data: json.encode({"username": username, "password": password}),
+    );
 
     // dio.fetch(requestOptions)
     HttpResult res = r.data as HttpResult;
@@ -112,8 +120,9 @@ class MyFileHttp {
       var r = await dio.get('/library', options: _options);
       HttpResult res = r.data as HttpResult;
       return List<Library>.from(
-          res.data.map((m) => Library.fromJson(m)).toList());
-    } catch (e, s) {
+        res.data.map((m) => Library.fromJson(m)).toList(),
+      );
+    } catch (e) {
       return [];
     }
   }
